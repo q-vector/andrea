@@ -13,13 +13,11 @@ AC_CHECK_LIBM
 
 dnl Checks for libraries.
 PKG_CHECK_MODULES([DENISE], [denise])
-ANDREA_REQUIRES="$ANDREA_REQUIRES denise cairomm-1.0"
+ANDREA_REQUIRES="$ANDREA_REQUIRES denise"
 ANDREA_CFLAGS="$ANDREA_CFLAGS $DENISE_CFLAGS"
 ANDREA_LIBS="$ANDREA_LIBS $DENISE_LIBS"
 
 dnl Checks for header files.
-AC_CHECK_HEADERS(ieeefp.h)
-AC_CHECK_HEADERS(cstdint)
 AC_CHECK_HEADERS(readline/readline.h)
 AC_CHECK_LIB(ncurses, main, [DENISE_LIBS="-lncurses $DENISE_LIBS"],
    AC_MSG_ERROR(ncurses not found), )

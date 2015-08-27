@@ -1,5 +1,5 @@
-INCLUDES	= -I$(top_builddir) -I$(top_srcdir)
-lib_LT_LIBRARIES = libandrea.la
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
+lib_LTLIBRARIES = libandrea.la
 
 pkginclude_HEADERS = andrea.h package.h geodesy.h geodetic_mesh.h \
    geodetic_transform.h gshhs.h journey.h sounding.h surface.h
