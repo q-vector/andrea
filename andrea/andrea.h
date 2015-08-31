@@ -31,6 +31,7 @@
 #include <andrea/journey.h>
 #include <andrea/sounding.h>
 #include <andrea/surface.h>
+#include <andrea/tc.h>
 
 using namespace std;
 using namespace denise;
@@ -57,7 +58,8 @@ namespace andrea
                   public Gshhs_Package,
                   public Journey_Package,
                   public Sounding_Package,
-                  public Surface_Package
+                  public Surface_Package,
+                  public Tc_Package
    {
 
       private:

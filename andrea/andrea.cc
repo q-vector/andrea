@@ -179,13 +179,14 @@ Andrea::print (const Entity& entity) const
 
 Andrea::Andrea (const Dstring& prompt)
    : prompt (prompt),
-     Surface_Package (*this),
      Geodesy_Package (*this),
      Gshhs_Package (*this),
+     Geodetic_Mesh_Package (*this),
+     Geodetic_Transform_Package (*this),
      Journey_Package (*this),
      Sounding_Package (*this),
-     Geodetic_Mesh_Package (*this),
-     Geodetic_Transform_Package (*this)
+     Surface_Package (*this),
+     Tc_Package (*this)
 {
 }
 
