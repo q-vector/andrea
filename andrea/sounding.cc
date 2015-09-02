@@ -439,7 +439,7 @@ Sounding_Package::surface_sounding_chart (const RefPtr<Context>& cr,
       const Real p = iterator->first;
       const Real y = is_p ? p : sounding.get_height (p);
       const Real datum = iterator->second;
-      const Point_2D point = transform.transform (Point_2D (datum, y));
+      const Point_2D& point = transform.transform (Point_2D (datum, y));
       symbol.cairo (cr, point);
       cr->fill ();
    }

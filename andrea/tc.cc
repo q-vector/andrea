@@ -76,6 +76,48 @@ Tc_Package::tc_track_print (const Dstring& identifier) const
 }
 
 void
+Tc_Package::tc_track_surface (const Dstring& surface_identifier,
+                              const Dstring& geodetic_transform_identifier,
+                              const Tokens& arguments)
+{
+
+   const Dstring& tc_track_identifier = arguments[0];
+   const RefPtr<Surface>& surface = andrea.get_surface (surface_identifier);
+   const RefPtr<Context> cr = andrea.get_cr (surface_identifier);
+   const Size_2D& size_2d = andrea.get_size_2d (surface_identifier);
+   const Point_2D centre (Real (size_2d.i) / 2, Real (size_2d.j) / 2);
+
+   const Geodetic_Transform* geodetic_transform_ptr =
+      andrea.get_geodetic_transform_ptr (geodetic_transform_identifier, centre);
+   const Geodetic_Transform& geodetic_transform = *geodetic_transform_ptr;
+
+   const Tc_Track& tc_track = get_tc_track (tc_track_identifier);
+   const set<Dtime> dtime_set = tc_track.get_dtime_set ();
+
+   Color::red (0.3).cairo (cr);
+
+   for (auto iterator = dtime_set.begin ();
+        iterator != dtime_set.end (); iterator++)
+   {
+      const Dtime& dtime = *(iterator);
+      const Lat_Long& lat_long = tc_track.get_lat_long (dtime);
+      const Point_2D& point = geodetic_transform.transform (lat_long);
+      Ring (4).cairo (cr, point);
+      cr->fill ();
+   }
+
+/*
+   cr->save ();
+   Color::black ().cairo (cr);
+   tc_track.cairo (cr, geodetic_transform);
+   cr->restore ();
+*/
+
+   delete geodetic_transform_ptr;
+
+}
+
+void
 Tc_Package::tc_parse (const Tokens& tokens)
 {
 
@@ -98,6 +140,14 @@ Tc_Package::tc_parse (const Tokens& tokens)
       }
    }
    else
+   if (tokens[0] == "surface")
+   {
+      const Dstring& surface_identifier = tokens[1];
+      const Dstring& geometric_transform_identifier = tokens[2];
+      tc_track_surface (surface_identifier, geometric_transform_identifier,
+         tokens.subtokens (2));
+   }
+   else
    if (tokens[0] == "print")
    {
       const Dstring& identifier = tokens[1];
@@ -118,33 +168,5 @@ Tc_Package::get_tc_track (const Dstring& identifier) const
    Exception e ("tc_track not found: " + identifier);
    try { return tc_track_map.at (identifier); }
    catch (const std::out_of_range& oor) { throw e; }
-}
-
-void
-Tc_Package::surface_tc_track (const Dstring& surface_identifier,
-                              const Dstring& geodetic_transform_identifier,
-                              const Dstring& tc_track_identifier)
-{
-
-   const RefPtr<Surface>& surface = andrea.get_surface (surface_identifier);
-   const RefPtr<Context> cr = andrea.get_cr (surface_identifier);
-   const Size_2D& size_2d = andrea.get_size_2d (surface_identifier);
-   const Point_2D centre (Real (size_2d.i) / 2, Real (size_2d.j) / 2);
-
-   const Geodetic_Transform* geodetic_transform_ptr =
-      andrea.get_geodetic_transform_ptr (geodetic_transform_identifier, centre);
-   const Geodetic_Transform& geodetic_transform = *geodetic_transform_ptr;
-
-   const Tc_Track& tc_track = andrea.get_tc_track (tc_track_identifier);
-
-/*
-   cr->save ();
-   Color::black ().cairo (cr);
-   tc_track.cairo (cr, geodetic_transform);
-   cr->restore ();
-*/
-
-   delete geodetic_transform_ptr;
-
 }
 

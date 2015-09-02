@@ -53,6 +53,11 @@ namespace andrea
          tc_track_print (const Dstring& identifier) const;
 
          void
+         tc_track_surface (const Dstring& surface_identifier,
+                           const Dstring& geodetic_transform_identifier,
+                           const Tokens& arguments);
+
+         void
          tc_parse (const Tokens& tokens);
 
       public: 
@@ -62,11 +67,6 @@ namespace andrea
 
          const Tc_Track&
          get_tc_track (const Dstring& identifier) const;
-
-         void
-         surface_tc_track (const Dstring& surface_identifier,
-                           const Dstring& geodetic_transform_identifier,
-                           const Dstring& tc_track_identifier);
 
    };
 
