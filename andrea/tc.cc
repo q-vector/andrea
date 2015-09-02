@@ -35,19 +35,32 @@ Tc_Package::tc_track_assign (const Dstring& identifier,
                              const Tokens& arguments)
 {
 
-   Tc_Track tc_track ("name");
+   const Dstring& source = arguments[0];
 
-/*
-   for (auto iterator = arguments.begin ();
-        iterator != arguments.end (); iterator++)
+   if (source == "jma_best_tracks")
    {
-      const Lat_Long lat_long (*(iterator));
-      journey.push_back (lat_long);
+
+      const Dstring& name = arguments[1];
+      const auto tc_track_map_id_set = jma_best_tracks.get_id_set (name);
+
+      for (auto iterator = tc_track_map_id_set.begin ();
+           iterator != tc_track_map_id_set.end (); iterator++)
+      {
+         const Dstring& id = *(iterator);
+         const Tc_Track& tc_track = jma_best_tracks.at (*(iterator));
+
+         const Dstring& i = identifier + id;
+
+         tc_track_map.insert (i, tc_track);
+         cout << "assigning " << id << " " << tc_track.get_name () << " to " << i << endl;
+      }
+
    }
-*/
-
-   tc_track_map.insert (identifier, tc_track);
-
+   else
+   {
+      Tc_Track tc_track ("name");
+      tc_track_map.insert (identifier, tc_track);
+   }
 }
 
 void
@@ -57,7 +70,8 @@ Tc_Package::tc_track_print (const Dstring& identifier) const
    const bool is_present = (iterator != tc_track_map.end ());
    if (is_present)
    {
-      cout << "tc_track " << identifier << " is present" << endl;
+      const Tc_Track& tc_track = tc_track_map.at (identifier);
+      cout << tc_track << endl;
    }
 }
 
@@ -65,12 +79,23 @@ void
 Tc_Package::tc_parse (const Tokens& tokens)
 {
 
+   const Dstring& action = tokens[0].get_lower_case ();
    const Integer n = tokens.size ();
 
-   if (tokens[0] == "assign")
+   if (action == "assign")
    {
       const Dstring& identifier = tokens[1];
       tc_track_assign (identifier, tokens.subtokens (2));
+   }
+   else
+   if (action == "jma_best_tracks")
+   {
+      const Dstring& jma_best_tracks_action = tokens[1].get_lower_case ();
+      if (jma_best_tracks_action == "ingest")
+      {
+         const Dstring& path = tokens[2];
+         jma_best_tracks.ingest (path);
+      }
    }
    else
    if (tokens[0] == "print")

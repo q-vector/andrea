@@ -208,12 +208,6 @@ Andrea::parse (const Tokens& tokens)
       return;
    }
    else
-   if (action == "surface")
-   {
-      surface_parse (tokens.subtokens (1));
-      return;
-   }
-   else
    if (action == "journey")
    {
       journey_parse (tokens.subtokens (1));
@@ -223,12 +217,6 @@ Andrea::parse (const Tokens& tokens)
    if (action == "geodesy")
    {
       geodesy_parse (tokens.subtokens (1));
-      return;
-   }
-   else
-   if (action == "sounding")
-   {
-      sounding_parse (tokens.subtokens (1));
       return;
    }
    else
@@ -247,6 +235,24 @@ Andrea::parse (const Tokens& tokens)
    if (action == "gshhs")
    {
       gshhs_parse (tokens.subtokens (1));
+      return;
+   }
+   else
+   if (action == "sounding")
+   {
+      sounding_parse (tokens.subtokens (1));
+      return;
+   }
+   else
+   if (action == "surface")
+   {
+      surface_parse (tokens.subtokens (1));
+      return;
+   }
+   else
+   if (action == "tc")
+   {
+      tc_parse (tokens.subtokens (1));
       return;
    }
    else
