@@ -57,6 +57,26 @@ Tc_Package::tc_track_assign (const Dstring& identifier,
 
    }
    else
+   if (source == "hko_best_tracks")
+   {
+
+      const Dstring& name = arguments[1];
+      const auto tc_track_map_id_set = hko_best_tracks.get_id_set (name);
+
+      for (auto iterator = tc_track_map_id_set.begin ();
+           iterator != tc_track_map_id_set.end (); iterator++)
+      {
+         const Dstring& id = *(iterator);
+         const Tc_Track& tc_track = hko_best_tracks.at (*(iterator));
+
+         const Dstring& i = identifier + id;
+
+         tc_track_map.insert (i, tc_track);
+         cout << "assigning " << id << " " << tc_track.get_name () << " to " << i << endl;
+      }
+
+   }
+   else
    {
       Tc_Track tc_track ("name");
       tc_track_map.insert (identifier, tc_track);
@@ -182,6 +202,16 @@ Tc_Package::tc_parse (const Tokens& tokens)
       {
          const Dstring& path = tokens[2];
          jma_best_tracks.ingest (path);
+      }
+   }
+   else
+   if (action == "hko_best_tracks")
+   {
+      const Dstring& hko_best_tracks_action = tokens[1].get_lower_case ();
+      if (hko_best_tracks_action == "ingest")
+      {
+         const Dstring& path = tokens[2];
+         hko_best_tracks.ingest (path);
       }
    }
    else
