@@ -19,9 +19,9 @@ ANDREA_LIBS="$ANDREA_LIBS $DENISE_LIBS"
 
 dnl Checks for header files.
 AC_CHECK_HEADERS(readline/readline.h)
-AC_CHECK_LIB(ncurses, main, [ANDREA_LIBS="-lncurses $DENISE_LIBS"],
+AC_CHECK_LIB(ncurses, main, [ANDREA_LIBS="-lncurses $ANDREA_LIBS"],
    AC_MSG_ERROR(ncurses not found), )
-AC_CHECK_LIB(readline, readline, [ANDREA_LIBS="-lreadline $DENISE_LIBS"],
+AC_CHECK_LIB(readline, readline, [ANDREA_LIBS="-lreadline $ANDREA_LIBS"],
    AC_MSG_ERROR(readline not found), -lncurses)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
