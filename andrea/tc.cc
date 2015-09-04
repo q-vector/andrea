@@ -95,23 +95,67 @@ Tc_Package::tc_track_surface (const Dstring& surface_identifier,
    const Tc_Track& tc_track = get_tc_track (tc_track_identifier);
    const set<Dtime> dtime_set = tc_track.get_dtime_set ();
 
-   Color::red (0.3).cairo (cr);
-
    const Real start_tau = tc_track.get_start_tau ();
    const Real end_tau = tc_track.get_end_tau ();
    const Integer n = Integer (round (end_tau - start_tau));
    const Tuple tau_tuple (n, start_tau, end_tau);
 
+   cr->set_line_width (2);
+   cr->set_font_size (10);
+
+   Tuple tau_24_tuple;
+
    for (auto iterator = tau_tuple.begin ();
         iterator != tau_tuple.end (); iterator++)
    {
-      const Dtime& dtime = tc_track.get_dtime (*(iterator));
+
+      const Real tau = *(iterator);
+      const Dtime& dtime = tc_track.get_dtime (tau);
+      const bool is_24 = (dtime.get_hour () % 24 == 0);
+      if (is_24) { tau_24_tuple.push_back (tau); continue; }
+
       const Lat_Long& lat_long = tc_track.get_lat_long (dtime);
+      const Real max_wind = tc_track.get_datum ("max_wind", dtime);
       const Point_2D& point = geodetic_transform.transform (lat_long);
+      const Real h = Domain_1D (100, 20).normalize (max_wind) * 0.5;
+      const Real s = Domain_1D (20, 100).normalize (max_wind) * 0.5 + 0.4;
+      const Real b = Domain_1D (20, 100).normalize (max_wind) * 0.4 + 0.6;
+
       const bool is_6 = (dtime.get_hour () % 6 == 0);
-      const Real radius = is_6 ? 6 : 2;
+      const Real radius = is_6 ? 4 : 2;
+
       Ring (radius).cairo (cr, point);
-      cr->fill ();
+      Color::hsb (h, s, b, 0.5).cairo (cr);
+      cr->fill_preserve ();
+      Color::hsb (h, s, b, 0.8).cairo (cr);
+      cr->stroke ();
+
+   }
+
+   for (auto iterator = tau_24_tuple.begin ();
+        iterator != tau_24_tuple.end (); iterator++)
+   {
+
+      const Real tau = *(iterator);
+      const Dtime& dtime = tc_track.get_dtime (tau);
+
+      const Lat_Long& lat_long = tc_track.get_lat_long (dtime);
+      const Real max_wind = tc_track.get_datum ("max_wind", dtime);
+      const Point_2D& point = geodetic_transform.transform (lat_long);
+      const Real radius = 8;
+      const Dstring& hh = Dstring::render ("%d", dtime.get_day ());
+      const Real h = Domain_1D (100, 20).normalize (max_wind) * 0.5;
+      const Real s = Domain_1D (20, 100).normalize (max_wind) * 0.5 + 0.4;
+      const Real b = Domain_1D (20, 100).normalize (max_wind) * 0.4 + 0.6;
+
+      Ring (radius).cairo (cr, point);
+      Color::hsb (h, s, b, 0.5).cairo (cr);
+      cr->fill_preserve ();
+      Color::hsb (h, s, b, 0.8).cairo (cr);
+      cr->stroke ();
+      Color::hsb (h, s/2, b/4).cairo (cr);
+      Label (hh, point, 'c', 'c').cairo (cr);
+
    }
 
    delete geodetic_transform_ptr;
