@@ -186,7 +186,8 @@ Andrea::Andrea (const Dstring& prompt)
      Journey_Package (*this),
      Sounding_Package (*this),
      Surface_Package (*this),
-     Tc_Package (*this)
+     Tc_Package (*this),
+     Track_Package (*this)
 {
 }
 
@@ -253,6 +254,12 @@ Andrea::parse (const Tokens& tokens)
    if (action == "tc")
    {
       tc_parse (tokens.subtokens (1));
+      return;
+   }
+   else
+   if (action == "track")
+   {
+      track_parse (tokens.subtokens (1));
       return;
    }
    else

@@ -32,6 +32,7 @@
 #include <andrea/sounding.h>
 #include <andrea/surface.h>
 #include <andrea/tc.h>
+#include <andrea/track.h>
 
 using namespace std;
 using namespace denise;
@@ -59,7 +60,8 @@ namespace andrea
                   public Journey_Package,
                   public Sounding_Package,
                   public Surface_Package,
-                  public Tc_Package
+                  public Tc_Package,
+                  public Track_Package
    {
 
       private:
