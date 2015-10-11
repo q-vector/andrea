@@ -183,6 +183,7 @@ Andrea::Andrea (const Dstring& prompt)
      Gshhs_Package (*this),
      Geodetic_Mesh_Package (*this),
      Geodetic_Transform_Package (*this),
+     Indices_Package (*this),
      Journey_Package (*this),
      Sounding_Package (*this),
      Surface_Package (*this),
@@ -206,6 +207,12 @@ Andrea::parse (const Tokens& tokens)
    if (action == "data_path")
    {
       data_path (tokens.subtokens (1));
+      return;
+   }
+   else
+   if (action == "indices" || action == "index")
+   {
+      indices_parse (tokens.subtokens (1));
       return;
    }
    else

@@ -43,10 +43,12 @@ namespace andrea
 
          void
          journey_assign (const Dstring& identifier,
-                         const Tokens& arguments);
+                         const Dstring& journey_str);
 
          void
-         journey_print (const Dstring& identifier) const;
+         journey_print (const Dstring& identifier,
+                        const Dstring& action,
+                        const Tokens& arguments) const;
 
          void
          journey_parse (const Tokens& tokens);

@@ -32,31 +32,71 @@ Journey_Package::Journey_Package (Andrea& andrea)
 
 void
 Journey_Package::journey_assign (const Dstring& identifier,
-                                 const Tokens& arguments)
+                                 const Dstring& journey_str)
 {
+   journey_map[identifier] = Journey (journey_str);
+}
 
-   Journey journey;
+void
+Journey_Package::journey_print (const Dstring& identifier,
+                                const Dstring& action,
+                                const Tokens& arguments) const
+{
 
    for (auto iterator = arguments.begin ();
         iterator != arguments.end (); iterator++)
    {
-      const Lat_Long lat_long (*(iterator));
-      journey.push_back (lat_long);
    }
 
-   journey_map[identifier] = journey;
+   const Journey& journey = journey_map.at (identifier);
 
-}
-
-void
-Journey_Package::journey_print (const Dstring& identifier) const
-{
-   auto iterator = journey_map.find (identifier);
-   const bool is_present = (iterator != journey_map.end ());
-   if (is_present)
+   if (action == "nodes")
    {
-      cout << "journey " << identifier << " is present" << endl;
+      for (auto j = journey.begin (); j != journey.end (); j++)
+      {
+         const Lat_Long lat_long (*(j));
+         cout << lat_long << endl;
+      }
    }
+   else
+   if (action == "distance")
+   {
+      cout << journey.get_distance () << endl;
+   }
+   else
+   if (action == "legs")
+   {
+      for (auto this_j = journey.begin (); this_j != journey.end (); this_j++)
+      {
+
+         auto next_j = this_j; next_j++;
+         if (next_j == journey.end ()) { break; }
+
+         const Lat_Long this_ll (*(this_j));
+         const Lat_Long next_ll (*(next_j));
+         const Journey::Simple sj (this_ll, next_ll);
+         const Real distance = sj.get_distance ();
+         const Real azimuth_f = sj.get_azimuth_forward ();
+         const Real azimuth_b = sj.get_azimuth_backward ();
+         cout << this_ll << " " << next_ll << " ";
+         cout << distance << " " << azimuth_f << " " << azimuth_b << endl;
+      }
+   }
+   else
+   if (action == "breakup")
+   {
+      const Real distance = journey.get_distance ();
+      const Real approx_d = stof (arguments[0]);
+      const Integer n = Integer (round (distance / approx_d)) + 1;
+      const Tuple tuple (n, 0, distance);
+      for (auto iterator = tuple.begin (); iterator != tuple.end (); iterator++)
+      {
+         const Real x = *(iterator);
+         const Lat_Long& lat_long = journey.get_lat_long (x);
+         cout << lat_long << endl;
+      }
+   }
+
 }
 
 void
@@ -68,13 +108,15 @@ Journey_Package::journey_parse (const Tokens& tokens)
    if (tokens[0] == "assign")
    {
       const Dstring& identifier = tokens[1];
-      journey_assign (identifier, tokens.subtokens (2));
+      const Dstring& journey_str = tokens[2];
+      journey_assign (identifier, journey_str);
    }
    else
    if (tokens[0] == "print")
    {
       const Dstring& identifier = tokens[1];
-      journey_print (identifier);
+      const Dstring& action = tokens[2];
+      journey_print (identifier, action, tokens.subtokens (3));
    }
 
 }

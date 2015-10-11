@@ -86,13 +86,15 @@ Track_Package::track_surface (const Dstring& surface_identifier,
    Real interval = 3600;
    Real line_width = 0.5;
    bool fill = false;
-   bool height = false;
+   Dstring encode = "";
 
    for (auto iterator = arguments.begin ();
         iterator != arguments.end (); iterator++)
    {
 
       const Tokens tokens (iterator->get_lower_case (), "=");
+      if (tokens.size () < 2) { continue; }
+
       const Dstring& option = tokens[0];
       const Dstring& value = tokens[1];
       const bool yes = (value == "y" || value == "yes" ||
@@ -103,7 +105,7 @@ Track_Package::track_surface (const Dstring& surface_identifier,
       if (option == "symbol") { symbol = Symbol::instance (value); }
       if (option == "line_width") { line_width = stof (value); }
       if (option == "fill") { fill = yes; }
-      if (option == "height") { height = yes; }
+      if (option == "encode") { encode = value; }
    }
 
    const bool no_symbol = (((const Polygon&)symbol).size () == 0);
@@ -144,8 +146,18 @@ Track_Package::track_surface (const Dstring& surface_identifier,
 
       if (no_symbol)
       {
-         const Dstring& str = (!height ? track_identifier :
-            Dstring::render ("%.0f", track.get_datum ("z", dtime)));
+         Dstring str (track_identifier);
+         if (encode != "")
+         {
+                 if (encode == "dd")   { str = dtime.get_string ("%d");   }
+            else if (encode == "ddhh") { str = dtime.get_string ("%d%H"); }
+            else if (encode == "hh")   { str = dtime.get_string ("%H");   }
+            else if (encode == "hhmm") { str = dtime.get_string ("%H%M"); }
+            else
+            {
+               str = Dstring::render ("%.0f", track.get_datum (encode, dtime));
+            }
+         }
          Label (str, point, 'c', 'c').cairo (cr);
       }
       else { symbol.cairo (cr, point); }

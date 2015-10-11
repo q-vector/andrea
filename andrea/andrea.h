@@ -28,6 +28,7 @@
 #include <andrea/geodetic_mesh.h>
 #include <andrea/geodetic_transform.h>
 #include <andrea/gshhs.h>
+#include <andrea/indices.h>
 #include <andrea/journey.h>
 #include <andrea/sounding.h>
 #include <andrea/surface.h>
@@ -57,6 +58,7 @@ namespace andrea
                   public Geodetic_Mesh_Package,
                   public Geodetic_Transform_Package,
                   public Gshhs_Package,
+                  public Indices_Package,
                   public Journey_Package,
                   public Sounding_Package,
                   public Surface_Package,
