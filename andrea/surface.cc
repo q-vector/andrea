@@ -613,6 +613,23 @@ Surface_Package::surface_parse (const Tokens& tokens)
       andrea.surface_sounding (tokens.subtokens (1));
    }
    else
+   if (tokens[0] == "tephigram")
+   {
+
+      const Dstring& surface_identifier = tokens[1];
+      const RefPtr<Surface>& surface = andrea.get_surface (surface_identifier);
+      const RefPtr<Context> cr = andrea.get_cr (surface_identifier);
+      const Size_2D& size_2d = andrea.get_size_2d (surface_identifier);
+
+      const Tephigram tephigram (size_2d);
+      Color::white ().cairo (cr);
+      cr->paint ();
+
+      cr->set_line_width (1);
+      tephigram.render (cr);
+
+   }
+   else
    if (tokens[0] == "journey")
    {
       const Dstring& surface_identifier = tokens[1];

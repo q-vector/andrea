@@ -24,6 +24,7 @@
 #include <map>
 #include <denise/dstring.h>
 #include <andrea/package.h>
+#include <denise/thermo.h>
 
 using namespace std;
 using namespace denise;
