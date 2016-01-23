@@ -320,7 +320,7 @@ Andrea::loop ()
 
          // This has to come second after apply_variables
          //    to allow for recursive variable declarations
-         const Tokens assign_tokens (input_line, "= ");
+         const Tokens assign_tokens (input_line, "=");
          if (assign_tokens.size () == 2)
          {
             const Dstring& variable = assign_tokens[0].get_trimmed ();
@@ -330,7 +330,7 @@ Andrea::loop ()
          }
 
          const Tokens tokens (input_line, " \f\n\t");
-         if (tokens.size () == 0) { continue; }
+         //if (tokens.size () == 0) { continue; }
 
          parse (tokens);
 

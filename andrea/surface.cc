@@ -443,7 +443,40 @@ Surface_Package::surface_parse (const Tokens& tokens)
 {
 
    const Integer n = tokens.size ();
+cout << "surface_parse " << tokens << endl;
 
+   if (tokens[0] == "help")
+   {
+      cout << "---> surface init identifier file_path geometry" << endl;
+      cout << "---> surface show identifier" << endl;
+      cout << "---> surface finish identifier" << endl;
+      cout << "---> surface write identifier" << endl;
+      cout << "---> surface restore identifier" << endl;
+      cout << "---> surface stroke identifier" << endl;
+      cout << "---> surface stroke_preserve identifier" << endl;
+      cout << "---> surface fill identifier" << endl;
+      cout << "---> surface fill_preserve identifier" << endl;
+      cout << "---> surface clip identifier" << endl;
+      cout << "---> surface clip_preserve identifier" << endl;
+      cout << "---> surface color identifier" << endl;
+      cout << "---> surface line_width identifier" << endl;
+      cout << "---> surface font_size identifier font_size" << endl;
+      cout << "---> surface font_size identifer font_face" << endl;
+      cout << "---> surface paint identifer" << endl;
+      cout << "---> surface title identifer tokens" << endl;
+      cout << "---> surface edge identifer tokens" << endl;
+      cout << "---> surface circle identifer tokens" << endl;
+      cout << "---> surface ellipse identifer tokens" << endl;
+      cout << "---> surface label identifer tokens" << endl;
+      cout << "---> surface domain identifer geodetic_transform_identifier domain" << endl;
+      cout << "---> surface sounding tokens" << endl;
+      cout << "---> surface tephigram identifier" << endl;
+      cout << "---> surface journey identifier geodetic_transform_identifier journey_identifier" << endl;
+      cout << "---> surface gshhs identifier geodetic_transform_identifier gshhs_identifier" << endl;
+      cout << "---> surface gtopo30 identifier geodetic_transform_identifier tokens" << endl;
+      cout << "---> surface blue_marble identifier geodetic_transform_identifier" << endl;
+   }
+   else
    if (tokens[0] == "init")
    {
       const Dstring& identifier = tokens[1];
@@ -557,12 +590,6 @@ Surface_Package::surface_parse (const Tokens& tokens)
    {
       const Dstring& surface_identifier = tokens[1];
       surface_title (surface_identifier, tokens.subtokens (2));
-   }
-   else
-   if (tokens[0] == "paint")
-   {
-      const Dstring& surface_identifier = tokens[1];
-      surface_paint (surface_identifier);
    }
    else
    if (tokens[0] == "edge")
