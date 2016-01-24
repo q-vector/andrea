@@ -277,8 +277,8 @@ Sounding_Package::surface_sounding_chart (const Tokens& tokens) const
    const RefPtr<Context> cr = andrea.get_cr (surface_identifier);
    const Sounding& sounding = andrea.get_sounding (sounding_identifier);
 
-   const Tokens x_tokens (x_str, "/");
-   const Tokens y_tokens (y_str, "/");
+   const Tokens x_tokens (x_str, ":");
+   const Tokens y_tokens (y_str, ":");
    const bool is_p = (y_tokens[0][0] == 'p');
    const Domain_1D domain_x (stof (x_tokens[0]), stof (x_tokens[1]));
    const Domain_1D domain_y (stof (y_tokens[1]), stof (y_tokens[2]));
@@ -304,7 +304,6 @@ Sounding_Package::surface_sounding_chart (const Tokens& tokens) const
 
    Mesh_2D mesh_2d (size_2d, domain_2d);
    Dstring fmt_x, unit_x;
-   const Real_Profile* real_profile_ptr;
 
    if (genre == "height")
    {
@@ -315,7 +314,12 @@ Sounding_Package::surface_sounding_chart (const Tokens& tokens) const
          minor_interval_x, minor_interval_y, minor_color);
       fmt_x = Dstring ("%.0f");
       unit_x = Dstring ("\u00b0C");
-      real_profile_ptr = sounding.get_height_profile_ptr ();
+      const Real_Profile* real_profile_ptr = sounding.get_height_profile_ptr ();
+      Cartesian_Transform_2D transform (domain_x, domain_y,
+         w, h, Point_2D (margin_l, margin_b));
+      surface_sounding_chart (cr, transform, is_p, mesh_2d, fmt_x, fmt_y, unit_x,
+         unit_y, sounding, *real_profile_ptr, Ring (4), Color::red (0.4));
+      delete real_profile_ptr;
    }
    else
    if (genre == "theta")
@@ -327,7 +331,12 @@ Sounding_Package::surface_sounding_chart (const Tokens& tokens) const
          minor_interval_x, minor_interval_y, minor_color);
       fmt_x = Dstring ("%.0f");
       unit_x = Dstring ("\u00b0C");
-      real_profile_ptr = sounding.get_theta_profile_ptr ();
+      const Real_Profile* real_profile_ptr = sounding.get_theta_profile_ptr ();
+      Cartesian_Transform_2D transform (domain_x, domain_y,
+         w, h, Point_2D (margin_l, margin_b));
+      surface_sounding_chart (cr, transform, is_p, mesh_2d, fmt_x, fmt_y, unit_x,
+         unit_y, sounding, *real_profile_ptr, Ring (4), Color::red (0.4));
+      delete real_profile_ptr;
    }
    else
    if (genre == "speed")
@@ -339,7 +348,12 @@ Sounding_Package::surface_sounding_chart (const Tokens& tokens) const
          minor_interval_x, minor_interval_y, minor_color);
       fmt_x = Dstring ("%.0f");
       unit_x = Dstring ("ms\u207b\u00b9");
-      real_profile_ptr = sounding.get_speed_profile_ptr ();
+      const Real_Profile* real_profile_ptr = sounding.get_speed_profile_ptr ();
+      Cartesian_Transform_2D transform (domain_x, domain_y,
+         w, h, Point_2D (margin_l, margin_b));
+      surface_sounding_chart (cr, transform, is_p, mesh_2d, fmt_x, fmt_y, unit_x,
+         unit_y, sounding, *real_profile_ptr, Ring (4), Color::red (0.4));
+      delete real_profile_ptr;
    }
    else
    if (genre == "along_speed")
@@ -352,7 +366,12 @@ Sounding_Package::surface_sounding_chart (const Tokens& tokens) const
          minor_interval_x, minor_interval_y, minor_color);
       fmt_x = Dstring ("%.0f");
       unit_x = Dstring ("ms\u207b\u00b9");
-      real_profile_ptr = sounding.get_along_speed_profile_ptr (azimuth);
+      const Real_Profile* real_profile_ptr = sounding.get_along_speed_profile_ptr (azimuth);
+      Cartesian_Transform_2D transform (domain_x, domain_y,
+         w, h, Point_2D (margin_l, margin_b));
+      surface_sounding_chart (cr, transform, is_p, mesh_2d, fmt_x, fmt_y, unit_x,
+         unit_y, sounding, *real_profile_ptr, Ring (4), Color::red (0.4));
+      delete real_profile_ptr;
    }
    else
    if (genre == "brunt_vaisala")
@@ -364,35 +383,41 @@ Sounding_Package::surface_sounding_chart (const Tokens& tokens) const
          minor_interval_x, minor_interval_y, minor_color);
       fmt_x = Dstring ("%.2f");
       unit_x = Dstring ("s\u207b\u00b9");
-      real_profile_ptr = sounding.get_brunt_vaisala_profile_ptr ();
+      const Real_Profile* real_profile_ptr = sounding.get_brunt_vaisala_profile_ptr ();
+      Cartesian_Transform_2D transform (domain_x, domain_y,
+         w, h, Point_2D (margin_l, margin_b));
+      surface_sounding_chart (cr, transform, is_p, mesh_2d, fmt_x, fmt_y, unit_x,
+         unit_y, sounding, *real_profile_ptr, Ring (4), Color::red (0.4));
+      delete real_profile_ptr;
    }
    else
    if (genre == "scorer")
    {
       const Real azimuth = stof (tokens[5]);
       const Real minor_interval_x = 1e-6;
-      const Real major_interval_x = 1e-5;
+      const Real major_interval_x = 5e-6;
       mesh_2d = Mesh_2D (Size_2D (2, 2), domain_2d,
          major_interval_x, major_interval_y, major_color,
          minor_interval_x, minor_interval_y, minor_color,
          1e23, 1e23, Color::black (1.0));
       fmt_x = Dstring ("%g");
       unit_x = Dstring ("m\u207b\u00b2");
-      real_profile_ptr = sounding.get_scorer_profile_ptr (azimuth);
+      const Real_Profile* scorer_profile_ptr = sounding.get_scorer_profile_ptr (azimuth);
+      const Real_Profile* scorer_a_profile_ptr = sounding.get_scorer_a_profile_ptr (azimuth);
+      const Real_Profile* scorer_b_profile_ptr = sounding.get_scorer_b_profile_ptr (azimuth);
+      Cartesian_Transform_2D transform (domain_x, domain_y,
+         w, h, Point_2D (margin_l, margin_b));
+      surface_sounding_chart_mesh (cr, transform, mesh_2d, fmt_x, fmt_y, unit_x, unit_y);
+      surface_sounding_chart_profile (cr, transform, is_p,
+         sounding, *scorer_profile_ptr, Ring (4), Color::red (0.4));
+      surface_sounding_chart_profile (cr, transform, is_p,
+         sounding, *scorer_a_profile_ptr, Ring (4), Color::green (0.4));
+      surface_sounding_chart_profile (cr, transform, is_p,
+         sounding, *scorer_b_profile_ptr, Ring (4), Color::blue (0.4));
+      delete scorer_profile_ptr;
+      delete scorer_a_profile_ptr;
+      delete scorer_b_profile_ptr;
    }
-
-   Affine_Transform_2D transform;
-   const Real span_x = domain_x.get_span ();
-   const Real span_y = domain_y.get_span ();
-   transform.scale (1, -1);
-   transform.translate (-domain_x.start, 0);
-   transform.scale (w / span_x, h / span_y);
-   transform.translate (margin_l, size_2d.j - margin_b);
-
-   surface_sounding_chart (cr, transform, is_p, mesh_2d, fmt_x, fmt_y, unit_x,
-      unit_y, sounding, *real_profile_ptr, Ring (4), Color::red (0.4));
-
-   delete real_profile_ptr;
 
 }
 
@@ -409,6 +434,20 @@ Sounding_Package::surface_sounding_chart (const RefPtr<Context>& cr,
                                           const Real_Profile& real_profile,
                                           const Symbol& symbol,
                                           const Color& color) const
+{
+   surface_sounding_chart_mesh (cr, transform, mesh_2d, fmt_x, fmt_y, unit_x, unit_y);
+   surface_sounding_chart_profile (cr, transform, is_p, sounding, real_profile, symbol, color);
+
+}
+
+void
+Sounding_Package::surface_sounding_chart_mesh (const RefPtr<Context>& cr,
+                                               const Transform_2D& transform,
+                                               const Mesh_2D& mesh_2d,
+                                               const Dstring& fmt_x,
+                                               const Dstring& fmt_y,
+                                               const Dstring& unit_x,
+                                               const Dstring& unit_y) const
 {
 
    const Domain_2D& domain_2d = mesh_2d.get_domain_2d ();
@@ -431,6 +470,18 @@ Sounding_Package::surface_sounding_chart (const RefPtr<Context>& cr,
    Label (unit_x, Point_2D (end_x, start_y), 'l', 'c', 9).cairo (cr, transform);
    Label (unit_y, Point_2D (start_x, end_y), 'r', 'b', 9).cairo (cr, transform);
 
+}
+
+void
+Sounding_Package::surface_sounding_chart_profile (const RefPtr<Context>& cr,
+                                                  const Transform_2D& transform,
+                                                  const bool is_p,
+                                                  const Sounding& sounding,
+                                                  const Real_Profile& real_profile,
+                                                  const Symbol& symbol,
+                                                  const Color& color) const
+{
+
    color.cairo (cr);
 
    for (auto iterator = real_profile.begin ();
@@ -445,4 +496,5 @@ Sounding_Package::surface_sounding_chart (const RefPtr<Context>& cr,
    }
 
 }
+
 

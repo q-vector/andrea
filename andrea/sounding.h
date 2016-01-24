@@ -86,6 +86,24 @@ namespace andrea
                                  const Symbol& symbol,
                                  const Color& color) const;
 
+         void
+         surface_sounding_chart_mesh (const RefPtr<Context>& cr,
+                                      const Transform_2D& transform,
+                                      const Mesh_2D& mesh_2d,
+                                      const Dstring& fmt_x,
+                                      const Dstring& fmt_y,
+                                      const Dstring& unit_x,
+                                      const Dstring& unit_y) const;
+
+         void
+         surface_sounding_chart_profile (const RefPtr<Context>& cr,
+                                         const Transform_2D& transform,
+                                         const bool is_p,
+                                         const Sounding& sounding,
+                                         const Real_Profile& real_profile,
+                                         const Symbol& symbol,
+                                         const Color& color) const;
+
 
    };
 
