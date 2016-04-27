@@ -330,8 +330,9 @@ Andrea::loop ()
          }
 
          const Tokens tokens (input_line, " \f\n\t");
-         //if (tokens.size () == 0) { continue; }
 
+         // if empty line, pass
+         if (tokens.size () == 0) { continue; }
          parse (tokens);
 
       }
