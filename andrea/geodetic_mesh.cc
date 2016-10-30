@@ -128,7 +128,8 @@ Geodetic_Mesh_Package::get_geodetic_mesh (const Dstring& identifier) const
 void
 Geodetic_Mesh_Package::surface_geodetic_mesh (const Dstring& surface_identifier,
                                               const Dstring& geodetic_transform_identifier,
-                                              const Dstring& geodetic_mesh_identifier)
+                                              const Dstring& geodetic_mesh_identifier,
+                                              const Tokens& arguments)
 {
 
    const RefPtr<Surface>& surface = andrea.get_surface (surface_identifier);
@@ -143,9 +144,33 @@ Geodetic_Mesh_Package::surface_geodetic_mesh (const Dstring& surface_identifier,
    const Geodetic_Mesh& geodetic_mesh =
       andrea.get_geodetic_mesh (geodetic_mesh_identifier);
 
+   vector<Lat_Long> anchor_lat_long_vector;
+   for (auto iterator = arguments.begin ();
+        iterator != arguments.end (); iterator++)
+   {
+      const Tokens tokens (iterator->get_lower_case (), ":");
+      const Dstring& option = tokens[0];
+      const Dstring& value = tokens[1];
+      if (option == "anchor")
+      {
+         const Lat_Long anchor_lat_long (value);
+         anchor_lat_long_vector.push_back (anchor_lat_long);
+      }
+   }
+
+
    cr->save ();
    Color::black ().cairo (cr);
-   geodetic_mesh.cairo (cr, geodetic_transform);
+
+   if (anchor_lat_long_vector.size () == 0)
+   {
+      geodetic_mesh.cairo (cr, geodetic_transform);
+   }
+   else
+   {
+      geodetic_mesh.cairo (cr, geodetic_transform, anchor_lat_long_vector);
+   }
+
    cr->stroke ();
    cr->restore ();
 

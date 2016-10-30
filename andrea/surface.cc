@@ -338,7 +338,6 @@ Surface_Package::surface_range_circle (const Dstring& surface_identifier,
 
    Range_Circle range_circle (lat_long, distance);
    range_circle.cairo (cr, geodetic_transform);
-   cr->fill ();
 
    delete geodetic_transform_ptr;
 
@@ -443,7 +442,6 @@ Surface_Package::surface_parse (const Tokens& tokens)
 {
 
    const Integer n = tokens.size ();
-cout << "surface_parse " << tokens << endl;
 
    if (tokens[0] == "help")
    {
@@ -632,8 +630,18 @@ cout << "surface_parse " << tokens << endl;
       const Dstring& geodetic_transform_identifier = tokens[2];
       const Lat_Long& lat_long (tokens[3]);
       const Real distance = stof (tokens[4]);
-      surface_range_circle (surface_identifier,
-         geodetic_transform_identifier, lat_long, distance);
+      if (n <= 5)
+      {
+         surface_range_circle (surface_identifier,
+            geodetic_transform_identifier, lat_long, distance);
+      }
+      else
+      {
+         const Dstring& gshhs_identifier = tokens[5];
+         const Range_Circle range_circle (lat_long, distance);
+         andrea.surface_range_circle_gshhs (surface_identifier,
+            geodetic_transform_identifier, gshhs_identifier, range_circle);
+      }
    }
    else
    if (tokens[0] == "sounding")
@@ -673,7 +681,8 @@ cout << "surface_parse " << tokens << endl;
       const Dstring& geodetic_transform_identifier = tokens[2];
       const Dstring& geodetic_mesh_identifier = tokens[3];
       andrea.surface_geodetic_mesh (surface_identifier,
-         geodetic_transform_identifier, geodetic_mesh_identifier);
+         geodetic_transform_identifier, geodetic_mesh_identifier,
+         tokens.subtokens (4));
    }
    else
    if (tokens[0] == "gshhs")

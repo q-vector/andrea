@@ -68,7 +68,8 @@ namespace andrea
          void
          surface_geodetic_mesh (const Dstring& surface_identifier,
                                 const Dstring& geodetic_transform_identifier,
-                                const Dstring& geodetic_mesh_identifier);
+                                const Dstring& geodetic_mesh_identifier,
+                                const Tokens& arguments);
 
    };
 

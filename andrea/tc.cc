@@ -145,9 +145,9 @@ Tc_Package::tc_track_surface (const Dstring& surface_identifier,
       const Real radius = is_6 ? 4 : 2;
 
       Ring (radius).cairo (cr, point);
-      Color::hsb (h, s, b, 0.5).cairo (cr);
+      Color::hsb (h, s, b, 0.1).cairo (cr);
       cr->fill_preserve ();
-      Color::hsb (h, s, b, 0.8).cairo (cr);
+      Color::hsb (h, s, b, 0.4).cairo (cr);
       cr->stroke ();
 
    }
@@ -169,11 +169,11 @@ Tc_Package::tc_track_surface (const Dstring& surface_identifier,
       const Real b = Domain_1D (20, 100).normalize (max_wind) * 0.4 + 0.6;
 
       Ring (radius).cairo (cr, point);
-      Color::hsb (h, s, b, 0.5).cairo (cr);
-      cr->fill_preserve ();
       Color::hsb (h, s, b, 0.8).cairo (cr);
+      cr->fill_preserve ();
+      Color::hsb (h, s, b, 0.5).cairo (cr);
       cr->stroke ();
-      Color::hsb (h, s/2, b/4).cairo (cr);
+      Color::hsb (h, s/2, b/4, 0.9).cairo (cr);
       Label (hh, point, 'c', 'c').cairo (cr);
 
    }

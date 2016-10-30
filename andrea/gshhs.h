@@ -68,6 +68,12 @@ namespace andrea
                         const Dstring& gshhs_identifier,
                         const Tokens& arguments);
 
+         void
+         surface_range_circle_gshhs (const Dstring& surface_identifier,
+                                     const Dstring& geodetic_transform_identifier,
+                                     const Dstring& gshhs_identifier,
+                                     const Range_Circle& range_circle);
+
    };
 
 };

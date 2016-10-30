@@ -123,7 +123,7 @@ Gshhs_Package::surface_gshhs (const Dstring& surface_identifier,
    for (auto iterator = arguments.begin ();
         iterator != arguments.end (); iterator++)
    {
-      const Tokens tokens (iterator->get_lower_case (), "=");
+      const Tokens tokens (iterator->get_lower_case (), ":");
       const Dstring& option = tokens[0];
       const Dstring& value = tokens[1];
       if (option == "fill")
@@ -138,4 +138,32 @@ Gshhs_Package::surface_gshhs (const Dstring& surface_identifier,
    delete geodetic_transform_ptr;
 
 }
+
+void
+Gshhs_Package::surface_range_circle_gshhs (const Dstring& surface_identifier,
+                                           const Dstring& geodetic_transform_identifier,
+                                           const Dstring& gshhs_identifier,
+                                           const Range_Circle& range_circle)
+{
+
+   const RefPtr<Surface>& surface = andrea.get_surface (surface_identifier);
+   const RefPtr<Context> cr = andrea.get_cr (surface_identifier);
+   const Size_2D& size_2d = andrea.get_size_2d (surface_identifier);
+   const Point_2D centre (Real (size_2d.i) / 2, Real (size_2d.j) / 2);
+
+   const Geodetic_Transform* geodetic_transform_ptr =
+      andrea.get_geodetic_transform_ptr (geodetic_transform_identifier, centre);
+   const Geodetic_Transform& geodetic_transform = *geodetic_transform_ptr;
+
+   const Gshhs& gshhs = *(andrea.get_gshhs_ptr (gshhs_identifier));
+
+   Polygon* clipped_range_circle_ptr = Polygon::boolean_op (DIFFERENCE,
+      range_circle, gshhs);
+   clipped_range_circle_ptr->cairo (cr, geodetic_transform);
+   delete clipped_range_circle_ptr;
+
+   delete geodetic_transform_ptr;
+
+}
+
 
