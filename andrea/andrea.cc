@@ -157,10 +157,7 @@ Andrea::wind_shear (const Tokens& arguments) const
 
    const Wind& wind_a = Wind::direction_speed (direction_a, speed_a);
    const Wind& wind_b = Wind::direction_speed (direction_b, speed_b);
-
-   const Real du = wind_a.u - wind_b.u;
-   const Real dv = wind_a.v - wind_b.v;
-   const Wind shear (du, dv);
+   const Wind& shear = wind_a - wind_b;
 
    const Real d_height = height_a - height_b;
    const bool per_height = gsl_finite (d_height);
