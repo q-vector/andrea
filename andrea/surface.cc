@@ -103,7 +103,7 @@ Surface_Package::surface_show (const Dstring& identifier) const
 
          case Expose:
          {
-            if (surface != 0)
+            if (surface)
             {
                Checkered (Color::gray (0.55), Color::gray (0.45)).cairo (cr);
                cr->paint();
